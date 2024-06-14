@@ -1,0 +1,18 @@
+###### Peter's Starter Template for a Flask Web App ######
+###### Requirements without Version Specifiers ######
+flask
+numpy
+pandas
+wtforms
+scikit-learn
+scikit-mlm
+keras
+jsons
+datetime
+timedelta
+argparse
+matplotlib
+Python-IO
+pybase64
+tensorflow
+openpyxl

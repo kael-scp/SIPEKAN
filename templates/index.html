@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+{% block body %}    
+        <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                <h1 class="m-0">Dashboard</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Deskripsi Aplikasi</li>
+                </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+<section class="content">
+    <div class="container-fluid"> 
+        <div class="row">
+            <div class="col-12">
+            <div class="info-box">
+                <div class="info-box-content">
+                <h1>Sistem Informasi Prediksi Kecepatan Angin (SIPEKAN)</h1>
+    
+                <!-- <span class="info-box-text"> </span> -->
+                <br>
+                <p class="lead"> Produk Data Science ini ditujukan untuk membantu BMKG Kota Batam memperkirakan
+                kecepatan angin di Kota Batam  dengan memanfaatkan model perkiraan kecepatan angin univariat terlatih 
+                (model perkiraan deret waktu) untuk memprediksi kecepatan angin.
+                Model Neural Network Long Short Term Memory (LSTM) telah dilatih untuk mencapai hal ini.
+                Hanya dengan memberikan 80 data per tiga jam  nilai atribut prediktor selama 10 hari terakhir sebagai
+                input ke sistem ini, kecepatan angin untuk 3 hari mendatang dapat diramalkan.
+                </p>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+            </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
+        <!-- /.content-header -->
+    <!-- <h1>{{ app_data['description'] }}</h1>
+    <h2>Prediksi page</h2>
+    
+    <p class="lead">Use this document as a way to quickly start any new project.
+        <br> All you get is this text and a mostly barebones HTML document.</p>
+    <div> Now updated to Bootstrap (Version 5.3.0) and jQuery 3.6.3</div> -->
+    
+{% endblock %}

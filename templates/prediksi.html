@@ -1,0 +1,375 @@
+{% extends "layout.html" %}
+
+{% block title %} Tables Data {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+
+{% endblock stylesheets %}
+
+{% block body %} 
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <!-- <h1>DataTables</h1> -->
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Input Data</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            {% if form_input %}
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Silakan input parameter untuk melihat hasil prediksi.</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <!-- we are adding the accordion ID so Bootstrap's collapse plugin detects it -->
+                    <div id="accordion">
+                      <div class="card card-primary">
+                        <div class="card-header">
+                          <h4 class="card-title w-100">
+                            <a class="d-block w-100" data-toggle="collapse" href="#collapseOne" aria-expanded="true">
+                              Penjelasan Singkat
+                            </a>
+                          </h4>
+                        </div>
+                        <div id="collapseOne" class="collapse" data-parent="#accordion" style="">
+                          <div class="card-body">
+                            <dl class="row">
+                              <dt class="col-sm-4">Deskripsi Sistem</dt>
+                              <dd class="col-sm-8">Implementasi LSTM melibatkan pengaturan parameter seperti jumlah neuron tersembunyi, jumlah batch, jumlah epoch, dan jumlah langkah mundur (look back) yang optimal untuk mencapai hasil yang diinginkan.</dd>
+                              <dt class="col-sm-4">Training Size</dt>
+                              <dd class="col-sm-8">jumlah sampel data yang digunakan untuk melatih model. Data ini dibagi menjadi set latihan untuk melatih model dan set validasi untuk mengukur kinerja model selama latihan.</dd>
+                              <dt class="col-sm-4">Batch</dt>
+                              <dd class="col-sm-8">sejumlah kecil data yang diproses secara bersamaan oleh model selama pelatihan. Daripada memproses seluruh dataset sekaligus, data dibagi menjadi batch-batch kecil.</dd>
+                              <dt class="col-sm-4">Epoch</dt>
+                              <dd class="col-sm-8">satu kali iterasi melalui seluruh dataset yang digunakan untuk melatih model. Selama satu epoch, model melihat dan memproses semua data latihan.</dd>
+                              <!-- <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget metus.</dd> -->
+                              <dt class="col-sm-4">Neuron Hidden</dt>
+                              <dd class="col-sm-8">unit pemrosesan di dalam lapisan tersembunyi (hidden layer) dari LSTM. Neuron ini memproses informasi dan membantu model LSTM untuk memahami dan mengidentifikasi pola-pola yang kompleks dalam data input.</dd>
+                              <dt class="col-sm-4">Look Back/Timestamp</dt>
+                              <dd class="col-sm-8">jumlah langkah waktu (atau timestamp) sebelumnya yang digunakan untuk memprediksi langkah waktu berikutnya dalam model LSTM.</dd>
+                            </dl>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card card-lightblue">
+                        <div class="card-header">
+                          <h4 class="card-title w-100">
+                            <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false">
+                              Input Parameter
+                            </a>
+                          </h4>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" data-parent="#accordion" style="">
+                          <div class="card-body">
+                            <form method="post" action="/prediksi">
+                              <div class="card-body">
+                                <div class="form-group">
+                                  <label for="exampleInputFile">Data Latih : Data Uji</label>
+                                  <select class="form-control" name="training_size">
+                                    <option value="0.9">90 : 10</option>
+                                    <option value="0.8">80 : 20</option>
+                                    <option value="0.7">70 : 30</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="exampleInputFile">Batch</label>
+                                  <select class="form-control" name="batch">
+                                    <option value="16">16 </option>
+                                    <option value="64">64 </option>
+                                    <option value="128">128</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="exampleInputFile">Epoch</label>
+                                  <select class="form-control" name="epoch">
+                                    <option value="50">50 </option>
+                                    <option value="100">100 </option>
+                                    <option value="150">150</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="exampleInputFile">Neuron Hidden</label>
+                                  <select class="form-control" name="neuron">
+                                    <option value="30">30 </option>
+                                    <option value="50">50 </option>
+                                    <option value="100">100 </option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="exampleInputFile">Look Back / Timestep</label>
+                                  <select class="form-control" name="look_back">
+                                    <option value="6">6 </option>
+                                    <option value="7">7 </option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="card-footer">
+                                <button type="submit" class="btn btn-info">Submit</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                  <!-- /.card -->
+              </div>
+            </div>
+
+            {% else %}
+                <!-- MAPE -->
+                <div class="row">
+                  <div class="col-lg-6 col-12">
+                    <!-- small box -->
+                    <div class="small-box bg-gradient-info">
+                      <div class="inner">
+                        <h3>{{ mape }}<sup style="font-size: 20px">%</sup></h3>
+                        <p>MAPE</p>
+                      </div>
+                      <div class="icon">
+                          <i class="ion ion-stats-bars"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ./col -->
+                  <div class="col-lg-6 col-12">
+                    <!-- small box -->
+                    <div class="small-box bg-gradient-primary">
+                      <div class="inner">
+                        <h3>{{ rmse }}<sup style="font-size: 20px"></sup></h3>
+                        <p>RMSE</p>
+                      </div>
+                      <div class="icon">
+                        <i class="ion ion-stats-bars"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ./col -->
+                </div>
+                <div class="card">
+                    <img src="data:image/png;base64,{{ plot_url }}" alt="Plot">
+                </div>
+                
+                <div class="card card-primary card-outline">
+                  <!-- <div class="card-header">
+                    <h3 class="card-title">
+                      Tabel Data
+                    </h3>
+                  </div> -->
+                  <div class="card-body">
+                    <!-- <h4 class="mt-1 ">Custom Content Above</h4> -->
+                    <ul class="nav nav-tabs" id="custom-content-above-tab" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active" id="custom-content-above-home-tab" data-toggle="pill" href="#custom-content-above-home" role="tab" aria-controls="custom-content-above-home" aria-selected="true"> Data Kecepatan Angin</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="custom-content-above-profile-tab" data-toggle="pill" href="#custom-content-above-profile" role="tab" aria-controls="custom-content-above-profile" aria-selected="false">Prediksi Data Test</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="custom-content-above-messages-tab" data-toggle="pill" href="#custom-content-above-messages" role="tab" aria-controls="custom-content-above-messages" aria-selected="false">Prediksi 3 Hari Selanjutnya</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="custom-content-above-settings-tab" data-toggle="pill" href="#custom-content-above-settings" role="tab" aria-controls="custom-content-above-settings" aria-selected="false">Bobot Hasil Pelatihan</a>
+                      </li>
+                    </ul>
+                    <div class="tab-content" id="custom-content-above-tabContent">
+                      <div class="tab-pane fade show active" id="custom-content-above-home" role="tabpanel" aria-labelledby="custom-content-above-home-tab">
+                        <!-- TABEL DATA KECEPATAN ANGIN AWAL DAN HASIL NORMALISASI -->
+                        <div class="col-12">
+                            <!-- <div class="card-header">
+                                <h3 class="card-title">Tabel Data Kecepatan Angin</h3>
+                            </div> -->
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table id="table-1" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Kecepatan Angin</th>
+                                        <th scope="col">Normalisasi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in norm %}
+                                    <tr>
+                                    <th scope="row">{{ loop.index }}</th>
+                                    <!-- <td>{{ item[0] }}</td> -->
+                                    <td>{{ ((item[0]|float * 1000)|int)|float / 1000}}</td>
+                                    <td>{{ ((item[1]|float * 1000)|int)|float / 1000}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                          
+                        </div>
+                        <!-- /.col -->
+                      </div>
+                      <div class="tab-pane fade" id="custom-content-above-profile" role="tabpanel" aria-labelledby="custom-content-above-profile-tab">
+                        <!-- TABEL DATA HASIL PREDIKSI TESTING DATA -->
+                        <div class="col-12">
+                          <!-- <div class="card-header">
+                              <h3 class="card-title">Tabel Hasil Prediksi Data Test</h3>
+                          </div> -->
+                          <!-- /.card-header -->
+                          <div class="card-body">
+                              <table id="table-2" class="table table-bordered table-hover">
+                              <thead>
+                                  <tr>
+                                      <th scope="col">No</th>
+                                      <th scope="col">Kecepatan Angin Awal</th>
+                                      <th scope="col">Prediksi Kecepatan Angin</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for item in pk %}
+                                  <tr>
+                                  <th scope="row">{{ loop.index }}</th>
+                                  <td>{{ ((item[0]|float * 1000)|int)|float / 1000 }}</td>
+                                  <td>{{ ((item[1]|float * 1000)|int)|float / 1000 }}</td>
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                              </table>
+                          </div>
+                          <!-- /.card-body -->
+                        
+                        <!-- /.card -->
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="custom-content-above-messages" role="tabpanel" aria-labelledby="custom-content-above-messages-tab">
+                          <!-- TABEL DATA HASIL PREDIKSI 3 HARI DILUAR DATASET -->
+                          <div class="col-12">
+                            <!-- <div class="card-header">
+                                <h3 class="card-title">Tabel Hasil Prediksi 3 Hari Selanjutnya</h3>
+                            </div> -->
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table id="table-3" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Tanggal</th>
+                                        <th scope="col">Prediksi Kecepatan Angin selanjutnya</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in pred %}
+                                    <tr>
+                                    <th scope="row">{{ loop.index }}</th>
+                                    <td>{{ item[0] }}</td>
+                                    <td>{{ ((item[1]|float * 1000)|int)|float / 1000 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                          </div>
+                          <!-- /.col -->
+                      </div>
+                      <div class="tab-pane fade" id="custom-content-above-settings" role="tabpanel" aria-labelledby="custom-content-above-settings-tab">
+                        <div class="col-12">
+                            <!-- <div class="card-header">
+                                <h3 class="card-title">Tabel</h3>
+                            </div> -->
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                              <table id="table-4" class="table table-bordered table-hover">
+                                <!-- ini adalah kode bobot-->
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Bobot</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in a %}
+                                    <tr>
+                                    <th scope="row">{{ loop.index }}</th> 
+                                    <td>{{ ((a[loop.index-1][0]|float * 1000)|int)|float / 1000 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                              </table>
+                            </div>
+                            <!-- /.card-body -->
+                        <!-- /.col -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.card -->
+                </div>
+            {% endif %}
+              
+        <!-- /.row -->
+        </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+{% endblock body %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block scripts %}
+
+  <!-- jQuery -->
+
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/static/assets/js/demo.js"></script>
+
+  <script src="{{ url_for('static', filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+  <!-- page script -->
+  <script>
+    $(function () {
+    //   $("#example1").DataTable({
+    //     "responsive": true,
+    //     "autoWidth": false,
+    //   });
+      $('#table-1').DataTable();
+      $('#table-2').DataTable();
+      $('#table-3').DataTable();
+      $('#table-4').DataTable();
+    });
+    
+  </script>
+
+{% endblock scripts %}
+
+

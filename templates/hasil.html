@@ -1,0 +1,236 @@
+{% extends "layout.html" %}
+
+{% block title %} Tables Data {% endblock %} 
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+
+{% endblock stylesheets %}
+
+{% block body %} 
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <!-- <h1>DataTables</h1> -->
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Upload Data</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Upload Data</h3>
+                </div>
+                <form action="/hasil" method="POST" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="file" required>
+                            <label type="Submit" value="Submit" class="custom-file-label" for="customFile">Pilih File </label>
+                        </div>
+                        <!-- <p>
+                        <div class="form-group">
+                            <label>Jumlah Prediksi (1 hari 8 data)</label>
+                            <select class="form-control" name="jml_pred">
+                              <option value="8">8</option>
+                              <option value="16">16</option>
+                              <option value="24">24</option>
+                              <option value="32">32</option>
+                            </select>
+                        </div> -->
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            {% if args %}
+                <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">Tabel Data Kecepatan Angin</h3>
+                            <div class="ml-auto">
+                                {% if csv_filename %}
+                                    <a class="btn btn-primary" href="{{ url_for('download', filename=csv_filename) }}" download>CSV
+                                        <i class="fas fa-save"></i>
+                                    </a>
+                                {% endif %}
+                                {% if xlsx_filename %}
+                                    <a class="btn btn-success ml-2" href="{{ url_for('download', filename=xlsx_filename) }}" download>XLSX
+                                        <i class="fas fa-save"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="table-1" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Kecepatan Angin</th>
+                                <th scope="col">Normalisasi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in norm %}
+                            <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ item[0] }}</td>
+                            <td>{{ ((item[1]|float * 1000)|int)|float / 1000 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3 class="card-title">Tabel Hasil Prediksi</h3>
+                                <div class="ml-auto">
+                                    {% if csv_filename2 %}
+                                        <a class="btn btn-primary" href="{{ url_for('download', filename=csv_filename2) }}" download>CSV
+                                            <i class="fas fa-save"></i>
+                                        </a>
+                                    {% endif %}
+                                    {% if xlsx_filename2 %}
+                                        <a class="btn btn-success ml-2" href="{{ url_for('download', filename=xlsx_filename2) }}" download>XLSX
+                                            <i class="fas fa-save"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="table-2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Tanggal</th>
+                                    <th scope="col">Hasil Prediksi Kecepatan Angin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in pred %}
+                                <tr>
+                                <th scope="row">{{ loop.index }}</th>
+                                <td>{{ item[0] }}</td>
+                                <td>{{ ((item[1]|float * 1000)|int)|float / 1000 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+    
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                
+            {% else %}
+                <div class="row">
+                    <div class="col-12">
+                    <div class="info-box">
+                        <div class="info-box-content">
+                        <span class="info-box-text">Silakan unggah file untuk melihat hasil prediksi.</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                    </div>
+                </div>
+            {% endif %}
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+{% endblock body %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block scripts %}
+
+  <!-- jQuery -->
+
+  <!-- AdminLTE App -->
+  <script src="/static/assets/js/adminlte.min.js"></script>
+  <!-- AdminLTE for demo purposes -->
+  <script src="/static/assets/js/demo.js"></script>
+
+  <script src="{{ url_for('static', filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+  <!-- page script -->
+  <script>
+    $(function () {
+    //   $("#example1").DataTable({
+    //     "responsive": true,
+    //     "autoWidth": false,
+    //   });
+      $('#table-1').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
+      $('#table-2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+      });
+      bsCustomFileInput.init();
+      });
+  </script>
+
+{% endblock scripts %}
